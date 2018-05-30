@@ -1,0 +1,477 @@
+package arrays2d;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+/**
+ *
+ * @author bunny
+ */
+public class Arrays2D 
+{
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) 
+    {
+        final int MAXANIMALS = 10;
+        //int animalLabel1, animalLabel2, animalLabel3;  // numbers at beginnings of lines listing animal types
+        int[] animalLabels = new int[MAXANIMALS];
+        //String animalType1, animalType2, animalType3;  // names of animal types that ends at “;”, ex. “Cats”
+        String[] animalTypes = new String[MAXANIMALS];
+        
+        
+        final int MAXBREEDDATA = 5;
+        int numOfBreeds;  // value after “;” telling number of breed of this animal in the file
+        //String breed1, breed2, breed3; // names of the breeds for this animal in the file
+        String[] breeds = new String[MAXBREEDDATA];
+        //int breedCnt1, breedCnt2, breedCnt3;  // number of animals of each breed in the file
+        int[] breedCnts = new int[MAXBREEDDATA];
+        
+        
+        //String breedLabelA = "", breedLabelB = "", breedLabelC = "";  // number-letter labels on lines of each animal breed
+        String[] breedLabels = new String[MAXBREEDDATA];
+        //int breedNumA = 0, breedNumB = 0, breedNumC = 0 ;  // number part of a breedLabel
+        int[] breedNums = new int[MAXBREEDDATA];
+        //String breedLetA = "", breedLetB = "", breedLetC = "";  // letter part of a breedLabel
+        String[] breedLets = new String[MAXBREEDDATA];
+        //String breedTypeA = "", breedTypeB = "", breedTypeC = "";  // the specific breed name that ends at “;”
+        String[] breedTypes = new String[MAXBREEDDATA];
+        
+        int MAXPETS = 25;
+        //String animalName1, animalName2, animalName3, animalName4;
+        String[] animalNames = new String[MAXPETS];
+        //int animalYOB1, animalYOB2, animalYOB3, animalYOB4;  // Year Of Birth = YOB
+        int[] animalYOBs = new int[MAXPETS];
+        File petsFile = new File("pets.txt");
+        Scanner inFile;   // assume this will be correctly assigned the File variable in a try-catch block
+        boolean fileValid = true;
+        boolean validTopLabel = false;
+        
+        try
+        {
+            inFile = new Scanner(petsFile);
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            inFile = new Scanner(System.in);
+            fileValid = false;
+                    
+        }
+        int animalLabel = 0;
+        String animalType = "";
+        String tempLine = "";
+        
+        
+        for( int index = 0; (index < MAXANIMALS) && inFile.hasNextLine(); index++)
+        {
+        // section of code to read a top level line and save the 
+        // the number and name from the top level line
+            animalLabels[index] = 0;
+            animalTypes[index] = "";
+            validTopLabel = false;
+            animalLabel = 0;
+            animalType = "";
+            tempLine = "";
+
+            while (fileValid && (validTopLabel == false) && inFile.hasNext())
+            {   try
+                {   animalLabel = inFile.nextInt();
+                    validTopLabel = true;
+                    inFile.useDelimiter("; ");  // name ends with :
+                    animalType = inFile.next();  // name
+                    inFile.reset();                 
+                    //inFile.nextLine(); 
+                }
+                catch  (InputMismatchException ime)
+                {   validTopLabel = false;
+                    tempLine = inFile.nextLine();
+                }
+            }
+            //validTopLabel = false;
+            animalLabels[index]  = animalLabel;
+            animalTypes[index] = animalType;
+            // End of top level line section
+            // where "index++" happens
+        }  // bottom of for loop
+        /*
+        animalLabel2 = 0;
+        animalType2 = "";
+        validTopLabel = false;
+        animalLabel = 0;
+        animalType = "";
+        tempLine = "";
+        
+        while (fileValid && (validTopLabel == false) && inFile.hasNext())
+        {   try
+            {   animalLabel = inFile.nextInt();
+                validTopLabel = true;
+                inFile.useDelimiter("; ");  // name ends with :
+                animalType = inFile.next();  // name
+                inFile.reset();                 
+                //inFile.nextLine(); 
+            }
+            catch  (InputMismatchException ime)
+            {   validTopLabel = false;
+                tempLine = inFile.nextLine();
+            }
+        }
+
+        //validTopLabel = false;
+        animalLabel2 = animalLabel;
+        animalType2 = animalType;        
+        
+        
+        animalLabel3 = 0;
+        animalType3 = "";
+        validTopLabel = false;
+        animalLabel = 0;
+        animalType = "";
+        tempLine = "";
+        
+        while (fileValid && (validTopLabel == false) && inFile.hasNext())
+        {   try
+            {   animalLabel = inFile.nextInt();
+                validTopLabel = true;
+                inFile.useDelimiter("; ");  // name ends with :
+                animalType = inFile.next();  // name
+                inFile.reset();                 
+                //inFile.nextLine(); 
+            }
+            catch  (InputMismatchException ime)
+            {   validTopLabel = false;
+                tempLine = inFile.nextLine();
+            }
+        }
+
+        //validTopLabel = false;
+        animalLabel3 = animalLabel;
+        animalType3 = animalType;         
+        */
+        for(int i = 0; (i < MAXANIMALS) ; i++)
+        {
+            if (animalLabels[i] != 0)
+            {
+                System.out.println("animalLabel["+i+"] = "+animalLabels[i]+" animalType1 ["+i+"] = "+animalTypes[i]);
+
+            }
+        }
+        //System.out.println("animalLabel2 "+animalLabel2+" animalType2 "+animalType2);
+        //System.out.println("animalLabel3 "+animalLabel3+" animalType3 "+animalType3);
+
+        System.out.println("Choose the label of your preferred type:  ");
+        Scanner kybd = new Scanner(System.in);
+        int chosenAnimalType = 0;
+        try
+        {
+            chosenAnimalType = kybd.nextInt();
+            
+            System.out.println("You chose "+chosenAnimalType);
+            
+        }
+        catch (InputMismatchException ime)
+        {
+            System.out.println("Invalid choice.  Default is choice 1.");
+            chosenAnimalType = 1;
+        }
+        
+        fileValid = true;
+        //inFile.close();
+        try
+        {
+            inFile = new Scanner(petsFile);
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            inFile = new Scanner(System.in);
+            fileValid = false;     
+        }
+        
+        
+        validTopLabel = false;
+        // need to go back to top of file and read to the desired animalType
+        animalLabel = 0;
+        
+        while (fileValid &&  ( !validTopLabel )                            //(validTopLabel == false) 
+                && inFile.hasNext() && (animalLabel != chosenAnimalType) )
+        {   try
+            {   animalLabel = inFile.nextInt();
+                if (animalLabel == chosenAnimalType)
+                    validTopLabel = true;
+                inFile.useDelimiter("; ");  // name ends with :
+                animalType = inFile.next();  // name
+                inFile.reset();                 
+                //inFile.nextLine(); 
+            }
+            catch  (InputMismatchException ime)
+            {   validTopLabel = false;
+                tempLine = inFile.nextLine();
+            }
+        }
+
+        // we have moved to the line of the user's choice
+        
+        System.out.println("animalLabel = "+animalLabel+
+                " chosenAnimalType = "+chosenAnimalType+"\n");
+        /*
+
+        final int MAXBREEDDATA = 5;
+        String[] breeds = new String[MAXBREEDDATA];
+        //int breedCnt1, breedCnt2, breedCnt3;  // number of animals of each breed in the file
+        int[] breedCnts = new int[MAXBREEDDATA];
+        //String breedLabelA = "", breedLabelB = "", breedLabelC = "";  // number-letter labels on lines of each animal breed
+        String[] breedLabels = new String[MAXBREEDDATA];
+        //int breedNumA = 0, breedNumB = 0, breedNumC = 0 ;  // number part of a breedLabel
+        int[] breedNums = new int[MAXBREEDDATA];
+        //String breedLetA = "", breedLetB = "", breedLetC = "";  // letter part of a breedLabel
+        String[] breedLets = new String[MAXBREEDDATA];
+        //String breedTypeA = "", breedTypeB = "", breedTypeC = "";  // the specific breed name that ends at “;”
+        String[] breedTypes = new String[MAXBREEDDATA];
+        */
+        
+        if ((validTopLabel) && (animalLabel == chosenAnimalType))
+        {
+
+            //System.out.println("DEBUG: In (animalLabel == chosenAnimalType)");
+        animalLabel = 0;
+        breeds[0] = "";  // breed1 = "";
+        breedCnts[0] = 0; //           breedCnt1 = 0;
+        breedTypes[0] = "";                     // breedTypeA = "";
+        
+        //animalName1 = animalName2 = animalName3 = animalName4 = "";
+        //animalYOB1 = animalYOB2 = animalYOB3 = animalYOB4 = 0;
+        
+        
+        // then after reading past animalLabel, Type and ';', then read breeds        
+        // read number (label) and animal type
+        // now reading number of breeds, then breed names and number of animals
+
+        tempLine = inFile.next();  // reads ';'
+        //System.out.println("DEBUG: templine should have semicolon *"+tempLine+"*");
+        numOfBreeds = inFile.nextInt();
+        System.out.println("numOfBreeds "+numOfBreeds);
+
+        //breeds[0]  = readWith09Delim(inFile);
+        
+            //System.out.println("DEBUG: breed1 is *"+breed1+"*");
+        //breedCnts[0] = inFile.nextInt();
+            //System.out.println("DEBUG: breedCnt1 is "+breedCnt1);
+            String breed = "";
+            String nextLabel = "";
+            //breed3 = breed2 = "";
+            //breedCnt3 = breedCnt2 = 0;
+        Scanner animalBreedsLine = new Scanner(inFile.nextLine());
+        for( int i = 0; i < MAXBREEDDATA ; i++)
+        {
+            
+            breeds[i] = "";
+            breedCnts[i] = 0;
+
+            int tempNum = 0;
+            if (animalBreedsLine.hasNext() ) // second breed or next line
+            {   
+                breed  = readWith09Delim(animalBreedsLine);
+                breed = breed.trim();
+                //System.out.println("DEBUG: breed.length(); is *"+breed.length()+"*");
+                if (breed.length() > 0) 
+                {
+                char t = breed.charAt(0);
+                if (t != '\n')
+                {   tempLine = String.valueOf( t );
+                    //System.out.println("DEBUG: tempLine is *"+tempLine+"*");
+                    try
+                    {
+                        tempNum = Integer.parseInt(tempLine);// # starts new line
+                        nextLabel = breed;
+                    }
+                    catch (InputMismatchException ime)
+                    {
+                        breeds[i] = breed;
+                        //System.out.println("DEBUG: breed2 ime is *"+breed2+"*");
+                        breedCnts[i] = animalBreedsLine.nextInt();
+                    }
+                    catch (NumberFormatException nfe)
+                    {
+                        breeds[i] = breed;
+                        //System.out.println("DEBUG: breed2 nfe is *"+breed2+"*");
+                        breedCnts[i] = animalBreedsLine.nextInt();
+                    }  
+                }
+                }
+            }
+        }
+        
+                    /*
+                    if (inFile.hasNext() ) // third breed or next line
+                    {
+
+                        breed  = readWith09Delim(inFile);
+                        t = breed.charAt(0);
+                        tempLine = String.valueOf( t );
+                        try
+                        {
+                            tempNum = Integer.parseInt(tempLine);// # starts new line
+                            nextLabel = breed;                
+                        }
+                        catch (InputMismatchException ime)
+                        {
+                            breed3 = breed;
+                            if (inFile.hasNextInt())
+                                breedCnt3 = inFile.nextInt();
+                        } 
+                        catch (NumberFormatException nfe)
+                        {
+                            breed3 = breed;
+                            if (inFile.hasNextInt())
+                                breedCnt3 = inFile.nextInt();
+                        }                        
+                    }
+                    */
+                
+            
+            if (nextLabel.equalsIgnoreCase(""))
+            {
+                nextLabel = inFile.next();
+            }
+            
+            for (int index = 0; index < MAXBREEDDATA; index++ )
+            {
+                if (breedCnts[index] > 0)
+                    System.out.println("breeds["+index+"] \t"+breeds[index]+
+                            "\t breedCnts["+index+"] \t"+breedCnts[index]);
+            }
+            
+                        //breeds[i] = breed;
+                        //breedCnts[i] = inFile.nextInt();   
+                        
+            //System.out.println("\nbreed1 "+breed1+" breedCnt1 "+breedCnt1);
+            //if (breedCnt2 > 0)
+            //    System.out.println("breed2 "+breed2+" breedCnt2 "+breedCnt2);
+            //if (breedCnt3 > 0)
+            //    System.out.println("breed3 "+breed3+" breedCnt3 "+breedCnt3); 
+             
+            
+            
+            /*
+            // now nextLabel has the beginning of new line of data
+            int labelValue = 0;
+            try
+            {
+                labelValue = Integer.parseInt(nextLabel);
+                // new animal line - no breed lines
+                animalLabel2 = labelValue;
+            }
+            catch(InputMismatchException ime)
+            {
+                breedLabelA = nextLabel;
+                breedNumA = Integer.parseInt(
+                        nextLabel.substring(0, 
+                                nextLabel.length() - 2+1));
+                breedLetA = nextLabel.substring(nextLabel.length() - 1);
+
+            }
+            catch(NumberFormatException nfe)
+            {
+                breedLabelA = nextLabel;
+                //System.out.println("DEBUG: nextLabel is "+nextLabel);
+                breedNumA = Integer.parseInt(nextLabel.substring(0, (nextLabel.length() - 2+1)));
+                breedLetA = nextLabel.substring(nextLabel.length() - 1);
+
+            }            
+            
+        
+        
+
+            System.out.println("\nbreedLabelA = "+breedLabelA);
+            //System.out.println("breedNumA = "+breedNumA+" breedLetA "+breedLetA);
+
+            inFile.useDelimiter("; ");  // name ends with :
+            breedTypeA = inFile.next();  // name
+            inFile.reset();
+            breedTypeA = breedTypeA.trim();
+        
+        if (breed1.equalsIgnoreCase(breedTypeA))
+        {       
+            inFile.next();  // remove ";"
+
+            animalName1 = readWith09Delim(inFile);
+            animalName1 = animalName1.trim();
+            animalYOB1 = inFile.nextInt();
+            
+            if (breedCnt1 >= 2)
+            {   
+                animalName2 = readWith09Delim(inFile);
+                animalName2 = animalName2.trim();
+                animalYOB2 = inFile.nextInt();    
+                
+                if (breedCnt1 >= 3)
+                {   
+                    animalName3 = readWith09Delim(inFile);
+                    animalName3 = animalName3.trim();
+                    animalYOB3 = inFile.nextInt();  
+
+                    if (breedCnt1 >= 4)
+                    {   
+                        animalName4 = readWith09Delim(inFile);
+                        animalName4 = animalName4.trim();
+                        animalYOB4 = inFile.nextInt();                      
+                    } 
+
+                    
+                }   
+                
+                
+            }
+        }
+        System.out.println("\nanimalName1 "+animalName1+ " animalYOB1 "+ animalYOB1);
+        if (animalYOB2 > 0)
+        System.out.println("animalName2 "+animalName2+ " animalYOB2 "+ animalYOB2);
+        if (animalYOB3 > 0)
+        System.out.println("animalName3 "+animalName3+ " animalYOB3 "+ animalYOB3);
+        if (animalYOB4 > 0)
+        System.out.println("animalName4 "+animalName4+ " animalYOB4 "+ animalYOB4);        
+        */
+        /*
+        animalName1, animalName2, animalName3, animalName4, animalYOB1, 
+        animalYOB2, animalYOB3, and animalYOB4 and that Name1 goes with 
+        YOB1, etc.  Write the Java code to output these values in a table.  
+        The table should have three columns with the first column being 
+        a number (1, 2, 3,  and 4), the second column being Name# and the 
+        third column being YOB#.  The table should have 5 rows where the 
+        first row is titles of “”, “Name”, and “Born In”.  The first 
+        column should be 3 characters wide, the second column should be 
+        20 chars wide, and the last column should be 10 chars wide.
+        */
+        /*
+            System.out.println("");
+            System.out.printf("%3s %-20s%10s\n","", "Name", "Born In");
+            System.out.printf("%3s. %-20s%10d\n", 1,animalName1,animalYOB1);
+            if (animalYOB2 != 0)
+                System.out.printf("%3s. %-20s%10d\n", 2,animalName2,animalYOB2);
+            if (animalYOB3 != 0)
+                System.out.printf("%3s. %-20s%10d\n", 3,animalName3,animalYOB3);
+            if (animalYOB4 != 0)
+                System.out.printf("%3s. %-20s%10d\n", 4,animalName4,animalYOB4);
+        
+        
+        }
+    */
+    }
+        
+    }
+    
+    public static String readWith09Delim(Scanner inFile)
+    {
+        //String value = "";
+        inFile.useDelimiter("[0-9]"); 
+        String value = inFile.next();
+        inFile.reset();
+        return value;
+    }
+
+}
+
+
