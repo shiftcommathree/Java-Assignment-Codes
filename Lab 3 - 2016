@@ -1,0 +1,1680 @@
+package lab3fantasyscifi;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+/**
+ *
+ * @author bunny
+ */
+public class Lab3FantasySciFi 
+{
+    /**
+    * Design an algorithm to solve this problem:
+    * You want to find out which book/movie/show of the choices above 
+    * would be the best liked by the current user.  You will start 
+    * by asking them if they prefer fantasy genre or the genre of 
+    * science fiction.  In the list above there are eight top-level 
+    * choices of specific books/movies/shows.  The first three are 
+    * science fiction, the last three are fantasy, and the two in 
+    * the middle could fall in either category or both. After you 
+    * get the user’s response about fantasy or science fiction, 
+    * then ask them which top-level book/movie/show they prefer 
+    * from that genre.  If the top-level choice has subchoices, 
+    * then ask the user to specify with subchoice they prefer.  
+    * Print their preference of genre, the top-level choice they 
+    * made, and if appropriate, the sub-level.  
+    */
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) 
+    {
+        String genre = "";
+        boolean genreChoice;  // true is FANTASY; false is SCIENCE FICTION
+        int choiceBMT = 0;  //Books Moves TV
+        //String bookMovieTV = "";
+        int choiceSub = 0;
+        String subChoice = "";
+        boolean fileFound = true;
+        File SFfile = new File("SciFiFantasyYear.txt");
+        Scanner inFile;
+
+        try
+        {
+            inFile = new Scanner(SFfile);
+            //System.out.println("File available.");
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            inFile = new Scanner(System.in);
+            System.out.println("\nFile not found - please correct file input ; "+fnfe);
+            fileFound = false;
+        }
+        
+        Scanner kybd = new Scanner(System.in);
+        Logger.getGlobal().setLevel(Level.OFF);// Use Level.OFF to turn off ; .INFO to turn on          
+     // * Greet user and intro program
+        System.out.println("Welcome to the Favorites Selection program.");
+     // * Ask user to give preference for fantasy or sci-fi genre
+        System.out.println("This program will read the input file of choices "
+                + "and then ask you for your favorite.");
+        //System.out.println("which is your favorite (or your preference): ");
+        //System.out.println("Fantasy (F)  or Science Fiction (S) ?");
+
+        /*
+        TopNumber1 will have 1
+        TopName1 will have “Firefly”
+        Genre1 will have ‘S’
+        MovieYear1 will have 2005
+        TVYear1 will have 2002
+        BookYear1 should have 0 in it since there is no Book value
+
+        SubNumberD will have 6
+        SubNameD will have “The Goblet of Fire”
+        SubBookYearD will have 2000
+        SubMovieYearD will have 2005
+        SubTVYearD should have 0 in it since there is no TV value
+        */        
+
+
+        int TopNumber1, TopNumber2, TopNumber3, TopNumber4, TopNumber5, TopNumber6,
+                TopNumber7, TopNumber8, TopNumber9, TopNumber10, TopNumber11, TopNumber12;
+        
+        char Genre;
+        String GenreWords;
+        int BookYear;
+        int MovieYear;
+        int TVYear;
+        String TopName1, TopName2, TopName3, TopName4, TopName5, TopName6,
+                TopName7, TopName8, TopName9, TopName10, TopName11, TopName12;
+        /*
+        char Genre1, Genre2, Genre3, Genre4, Genre5, Genre6,
+                Genre7, Genre8, Genre9, Genre10, Genre11, Genre12;
+        int BookYear1, BookYear2, BookYear3, BookYear4, BookYear5, BookYear6,
+                BookYear7, BookYear8, BookYear9, BookYear10, BookYear11, BookYear12;        
+        int MovieYear1, MovieYear2, MovieYear3, MovieYear4, MovieYear5, MovieYear6,
+                MovieYear7, MovieYear8, MovieYear9, MovieYear10, MovieYear11, MovieYear12;  
+        int TVYear1, TVYear2, TVYear3, TVYear4, TVYear5, TVYear6,
+                TVYear7, TVYear8, TVYear9, TVYear10, TVYear11, TVYear12;  
+        */
+        int SubNumberA, SubNumberB, SubNumberC, SubNumberD, SubNumberE, SubNumberF,
+                SubNumberG, SubNumberH, SubNumberI, SubNumberJ, SubNumberK, SubNumberL; 
+        char SubLetterA, SubLetterB, SubLetterC, SubLetterD, SubLetterE, SubLetterF,
+                SubLetterG, SubLetterH, SubLetterI, SubLetterJ, SubLetterK, SubLetterL; 
+        String SubName;
+        char SubLetter;
+        int SubBookYear;
+        int SubMovieYear;
+        int SubTVYear;
+        String SubNameA, SubNameB, SubNameC, SubNameD, SubNameE, SubNameF,
+                SubNameG, SubNameH, SubNameI, SubNameJ, SubNameK, SubNameL; 
+        /*
+        int SubBookYearA, SubBookYearB, SubBookYearC, SubBookYearD, SubBookYearE, SubBookYearF,
+                SubBookYearG, SubBookYearH, SubBookYearI, SubBookYearJ, SubBookYearK, SubBookYearL;  
+        int SubMovieYearA, SubMovieYearB, SubMovieYearC, SubMovieYearD, SubMovieYearE, SubMovieYearF,
+                SubMovieYearG, SubMovieYearH, SubMovieYearI, SubMovieYearJ, SubMovieYearK, SubMovieYearL; 
+        int SubTVYearA, SubTVYearB, SubTVYearC, SubTVYearD, SubTVYearE, SubTVYearF,
+                SubTVYearG, SubTVYearH, SubTVYearI, SubTVYearJ, SubTVYearK, SubTVYearL; 
+        */
+
+        boolean validTopLevel = false;
+        int TopNumber = 0;
+        String TopName = "";
+        String temp = "";
+        String tempLine = "";
+        int tempYear = 0;
+        char tempChar = ' ';
+        String tempStr = "";
+        int yearCheck = 0;
+        int numCheck = 0;
+        boolean newBMT = false;  
+        int choiceCount = 0;
+        int subChoiceCount = 0;
+        
+
+        // Can't loop because all variables are unique.  Each variable must be 
+        // handled individually.  Will use lots of copy-paste.
+        
+        // Reading from file to find top-level choices
+        // Read first "word", determine if it is number or number-letter combo
+        // If number, save it into TopNumber1 and read rest of line into 
+        // corresponding variables
+        
+        int countTopCheck = 1;
+        /*  Title 1  */
+        TopNumber1 = 0;
+        TopName1 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            //System.out.println("In while loop to read a number. Loop "+countTopCheck++);
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 1 "+TopNumber+" and "+TopName);
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);
+            }
+        }
+        validTopLevel = false;
+        TopNumber1 = TopNumber;
+        TopName1 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+        tempLine = "";
+        temp = "";
+        
+        /*  Title 2  */
+        TopNumber2 = 0;
+        TopName2 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 2 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber2 = TopNumber;
+        TopName2 = TopName; // name
+        TopNumber = 0;
+        TopName = "";        
+        
+        /*  Title 3  */
+        TopNumber3 = 0;
+        TopName3 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 3 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber3 = TopNumber;
+        TopName3 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+
+        /*  Title 4  */
+        TopNumber4 = 0;
+        TopName4 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 4 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber4 = TopNumber;
+        TopName4 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+        
+        /*  Title 5  */
+        TopNumber5 = 0;
+        TopName5 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 5 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber5 = TopNumber;
+        TopName5 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+
+        /*  Title 6  */
+        TopNumber6 = 0;
+        TopName6 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 6 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber6 = TopNumber;
+        TopName6 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+
+        /*  Title 7  */
+        TopNumber7 = 0;
+        TopName7 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 7 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber7 = TopNumber;
+        TopName7 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+
+        /*  Title 8  */
+        TopNumber8 = 0;
+        TopName8 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 8 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber8 = TopNumber;
+        TopName8 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+
+        /*  Title 9  */
+        TopNumber9 = 0;
+        TopName9 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 9 "+TopNumber+" and "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+        }
+        validTopLevel = false;
+        TopNumber9 = TopNumber;
+        TopName9 = TopName; // name
+        TopNumber = 0;
+        TopName = "";        
+
+        /*  Title 10  */
+        TopNumber10 = 0;
+        TopName10 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            //System.out.println("In while loop to read a number.");
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 10 "+TopNumber+" and "+TopName);
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);
+            }
+        }
+        validTopLevel = false;
+        TopNumber10 = TopNumber;
+        TopName10 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+        tempLine = "";
+        temp = "";
+        
+        /*  Title 11  */
+        TopNumber11 = 0;
+        TopName11 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            //System.out.println("In while loop to read a number.");
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 11 "+TopNumber+" and "+TopName);
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);
+            }
+        }
+        validTopLevel = false;
+        TopNumber11 = TopNumber;
+        TopName11 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+        tempLine = "";
+        temp = "";
+
+        /*  Title 12  */
+        TopNumber12 = 0;
+        TopName12 = "";
+
+        while ((validTopLevel == false) && inFile.hasNext())
+        {
+            //System.out.println("In while loop to read a number.");
+            try
+            {
+                TopNumber = inFile.nextInt();
+                validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+                inFile.nextLine();
+                choiceCount++;
+                //System.out.println("Read 12 "+TopNumber+" and "+TopName);
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                validTopLevel = false;
+                tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);
+            }
+        }
+        validTopLevel = false;
+        TopNumber12 = TopNumber;
+        TopName12 = TopName; // name
+        TopNumber = 0;
+        TopName = "";
+        tempLine = "";
+        temp = "";
+        // *** All top level lines (up to 12) have been read from the file
+        
+        
+        
+        // Print top-level data from file in table for use selection 
+        System.out.println("\nPlease make your selection from the table:" );
+        System.out.printf("%8s%30s\n","Number","Title");
+        //System.out.println("_______________________________________");
+        System.out.println("=======================================");
+        System.out.printf("%5s%33s\n",TopNumber1,TopName1);
+        System.out.printf("%5s%33s\n",TopNumber2,TopName2);    
+        if(TopNumber3 != 0) System.out.printf("%5s%33s\n",TopNumber3,TopName3); 
+        if(TopNumber4 != 0) System.out.printf("%5s%33s\n",TopNumber4,TopName4);        
+        if(TopNumber5 != 0) System.out.printf("%5s%33s\n",TopNumber5,TopName5);        
+        if(TopNumber6 != 0) System.out.printf("%5s%33s\n",TopNumber6,TopName6);        
+        if(TopNumber7 != 0) System.out.printf("%5s%33s\n",TopNumber7,TopName7);        
+        if(TopNumber8 != 0) System.out.printf("%5s%33s\n",TopNumber8,TopName8); 
+        if(TopNumber9 != 0) System.out.printf("%5s%33s\n",TopNumber9,TopName9);        
+        if(TopNumber10 != 0) System.out.printf("%5s%33s\n",TopNumber10,TopName10);
+        if(TopNumber11 != 0) System.out.printf("%5s%33s\n",TopNumber11,TopName11);
+        if(TopNumber12 != 0) System.out.printf("%5s%33s\n",TopNumber12,TopName12); 
+        
+        System.out.print("\nPlease select your favorite from the list above: ");
+        
+        int userNumber = 0;
+        boolean userInValid; // = false;
+        boolean moveForward;
+        do
+        {   try
+            {   userNumber = kybd.nextInt();
+                //userInValid = true; 
+                //System.out.println("After choice read "+userNumber);
+            }
+            catch  (InputMismatchException ime)
+            {   
+                //userInValid = false;
+                userNumber = 0;
+
+            }
+            
+            moveForward = false;
+            if ((userNumber >= 1) && (userNumber <= choiceCount))
+            {
+                moveForward = true;
+                
+            }
+            else
+            {   System.out.println("The input was not recognized.");
+                System.out.print("Please enter a valid input between 1 and "+choiceCount+": ");
+            }
+        }
+        while (!moveForward);  // !moveForward is the same as moveForward == false       
+        
+        //System.out.println("Your input was "+userNumber);
+        switch (userNumber)
+        {
+            case 1: {
+                TopNumber = TopNumber1;
+                TopName = TopName1;
+                break;
+            }
+            case 2: {
+                TopNumber = TopNumber2;
+                TopName = TopName2;
+                break;
+            }  
+            case 3: {
+                TopNumber = TopNumber3;
+                TopName = TopName3;
+                break;
+            } 
+            case 4: {
+                TopNumber = TopNumber4;
+                TopName = TopName4;
+                break;
+            }   
+            case 5: {
+                TopNumber = TopNumber5;
+                TopName = TopName5;
+                break;
+            } 
+            case 6: {
+                TopNumber = TopNumber6;
+                TopName = TopName6;
+                break;
+            } 
+            case 7: {
+                TopNumber = TopNumber7;
+                TopName = TopName7;
+                break;
+            } 
+            case 8: {
+                TopNumber = TopNumber8;
+                TopName = TopName8;
+                break;
+            } 
+            case 9: {
+                TopNumber = TopNumber9;
+                TopName = TopName9;
+                break;
+            } 
+            case 10: {
+                TopNumber = TopNumber10;
+                TopName = TopName10;
+                break;
+            }  
+            case 11: {
+                TopNumber = TopNumber11;
+                TopName = TopName11;
+                break;
+            } 
+            case 12: {
+                TopNumber = TopNumber12;
+                TopName = TopName12;
+                break;
+            }             
+        }
+
+        //System.out.println("After choice , TopNumber is "+TopNumber+" and TopName is "+TopName);
+        
+        // *** Need to close file and reopen so can read from the top again **//
+        inFile.close();
+        SFfile = new File("SciFiFantasyYear.txt");
+
+        try
+        {
+            inFile = new Scanner(SFfile);
+            //System.out.println("File available.");
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            inFile = new Scanner(System.in);
+            //System.out.println("\nFile not found - please correct file input ; "+fnfe);
+            fileFound = false;
+        }        
+        
+        // Section to read the items after the colon 
+        Genre = ' ';
+        BookYear = 0;
+        MovieYear = 0;
+        TVYear = 0;      
+        int skipNumber = 0;
+        int lineCount = 0;
+        String skip = "";
+        
+        // ** Need to get to correct line, i.e. the line the user chose **
+        while (skipNumber != TopNumber)
+        {
+            try
+            {
+                skipNumber = inFile.nextInt();
+                //validTopLevel = true;
+                inFile.useDelimiter(" : ");  // name ends with :
+                TopName = inFile.next();  // name
+                inFile.reset();  
+
+                //lineCount++;
+                //System.out.println("Finding line "+skipNumber+" with "+TopName);                
+            }
+            catch  (InputMismatchException ime)
+            {
+                // Skip this line
+                //validTopLevel = false;
+                if (inFile.hasNextLine())
+                    tempLine = inFile.nextLine();
+                //System.out.println("Skipped this line"+tempLine);                
+            }
+            catch (NoSuchElementException nsee)
+            {
+                if (inFile.hasNextLine())
+                    tempLine = inFile.nextLine();
+            }
+        }
+        TopNumber = skipNumber;
+        //System.out.println("Read "+skipNumber+" and "+TopName);
+        // Read the end of the line and save
+        // Then do subchoice reading
+        skip = inFile.next(); 
+        Genre = (inFile.next()).charAt(0);  // S, F, or E
+        //System.out.println("Genre "+Genre);
+        GenreWords = makeGenre(Genre);
+        
+        temp = inFile.next();   // first input of media info
+        //System.out.println("1st temp "+temp);
+        tempYear = inFile.nextInt();
+        //System.out.println("1st TempYear "+tempYear);
+        if (temp.equalsIgnoreCase("Book"))
+        {
+            BookYear = tempYear;
+        }
+        else if (temp.equalsIgnoreCase("Movie"))
+        {
+            MovieYear = tempYear;
+        }
+        else if (temp.equalsIgnoreCase("TV"))
+        {
+            TVYear = tempYear;
+        }
+        
+        temp = "";
+        tempYear = 0;
+        tempStr = "";
+        tempChar = ' ';        
+        
+        temp = inFile.next();  // read next word
+        //System.out.println("2nd temp "+temp);
+        // This word might be Movie, TV, #, or #X
+        // Check to see if the first letter is a digit
+
+        tempChar = temp.charAt(0);  // get first char
+        tempStr = tempStr.concat(tempStr+tempChar);  // turn into one char string
+        numCheck = 0;
+        newBMT = false;
+
+        // if it's a number then it's a new line of data
+        try
+        {   numCheck = Integer.parseInt(tempStr);  // new line with # or #X
+            //System.out.println("At 2nd New line of data numCheck is "+numCheck);
+            newBMT = true;
+        }
+        catch (NumberFormatException nfe)
+        {   // another media format
+            tempYear = inFile.nextInt();
+            //System.out.println("Additional media");
+            if (temp.equalsIgnoreCase("Movie"))
+            {
+                MovieYear = tempYear;
+            }
+            else if (temp.equalsIgnoreCase("TV"))
+            {
+                TVYear = tempYear;
+            }
+        }
+
+        //System.out.println("newBMT is "+newBMT);
+        
+        if (!newBMT)
+        {
+            temp = "";
+            tempYear = 0;
+            tempStr = "";
+            tempChar = ' ';
+
+            temp = inFile.next();  // read next word
+            //System.out.println("3rd temp "+temp);
+            // This word might be Movie, TV, #, or #X
+            // Check to see if the first letter is a digit
+            tempChar = temp.charAt(0);  // get first char
+            tempStr = tempStr.concat(tempStr+tempChar);  // turn into one char string
+            //System.out.println("tempStr is *"+tempStr+"*");
+            numCheck = 0;
+            newBMT = false;
+
+            // if it's a number then it's a new line of data
+            try
+            {   numCheck = Integer.parseInt(tempStr);  // new line with # or #X
+                //System.out.println("numCheck "+numCheck);
+                //System.out.println("At 3rd New line of data numCheck is "+numCheck);
+                newBMT = true;
+            }
+            catch (NumberFormatException nfe)
+            {   // another media format
+                tempYear = inFile.nextInt();
+                //System.out.println("TV media");
+                TVYear = tempYear;
+            }
+        }
+
+        //System.out.println("BookYear "+BookYear+" MovieYear "+MovieYear+" TVYear "+TVYear);
+        
+        // if newBMT is true then the temp was a # or #X so don't need to read
+        if (!newBMT)
+        {
+            temp = inFile.next(); 
+        }
+        
+        //System.out.println("Beginning of line temp is "+temp);
+
+        // *** Program knows that subchoices begin immediately after the chosen top-level choice
+        
+        /*
+        String SubName;
+        char SubLetter;
+        int SubBookYear;
+        int SubMovieYear;
+        int SubTVYear;
+        SubNumberA, B
+        SubNameA, B
+        */
+
+        tempYear = 0;
+        tempStr = "";
+        tempChar = ' ';        
+        SubName = "";
+        SubLetter = ' ';
+        int SubNumber = TopNumber;
+        SubBookYear = 0;
+        SubMovieYear = 0;
+        SubTVYear = 0;
+        int charCount = 0;
+        boolean validSubLevel = false;
+        String tempNL = temp;
+        //System.out.println("Before checking subchoice A, tempNL is "+tempNL);
+        int digiCount = 0;
+        
+        // Need to test if temp is a # or a #X
+        // If #, then no subchoices are available        
+        if (((tempNL.length() >= 2 ) && (TopNumber <= 9))||   // 2 char means subchoice not top level
+            ((tempNL.length() >= 3 ) && (TopNumber > 9)))
+           {
+            //System.out.println("in if tempNL = "+tempNL);
+            
+
+            digiCount = tempNL.length() - 1;
+            if (digiCount > 0)
+                SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+
+            //System.out.println("From tempNL, SubNumber is "+SubNumber);
+            
+            
+            
+            /*  Title A */
+            SubNumberA = SubNumber;
+            SubNameA = "";
+            SubLetter = ' ';
+            //System.out.println("in if tempNL");
+
+            while (!validSubLevel && inFile.hasNext() && (!inFile.hasNextInt()))
+            {
+                //System.out.println("in A while");
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("At A - Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            //System.out.println("Read "+SubLetter+" and "+SubName+" plus "+SubNumber); 
+            validSubLevel = false;
+            SubNameA = SubName; // name
+            SubLetterA = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+
+            /*  Title B */
+            SubNumberB = SubNumber;
+            SubNameB = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+            
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                //System.out.println("in B while");
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("At B - Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameB = SubName; // name
+            SubLetterB = SubLetter;
+            //SubNumber = 0;
+            SubName = "";        
+            SubLetter = ' ';
+            
+            /*  Title C */
+            SubNumberC = SubNumber;
+            SubNameC = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                //System.out.println("in C while");
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("At C - Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameC = SubName; // name
+            SubLetterC = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+            
+            /*  Title D */
+            SubNumberD = SubNumber;
+            SubNameD = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("At D - Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameD = SubName; // name
+            SubLetterD = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+            
+            /*  Title E */
+            SubNumberE = SubNumber;
+            SubNameE = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameE = SubName; // name
+            SubLetterE = SubLetter;
+            //SubNumber = 0;
+            SubName = "";              
+            SubLetter = ' ';
+            
+            /*  Title F */
+            SubNumberF = SubNumber;
+            SubNameF = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameF = SubName; // name
+            SubLetterF = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+
+            /*  Title G */
+            SubNumberG = SubNumber;
+            SubNameG = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read G "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameG = SubName; // name
+            SubLetterG = SubLetter;
+            //SubNumber = 0;
+            SubName = ""; 
+            SubLetter = ' ';
+
+            /*  Title H */
+            SubNumberH = SubNumber;
+            SubNameH = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read H "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameH = SubName; // name
+            SubLetterH = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+
+            /*  Title I */
+            SubNumberI = SubNumber;
+            //System.out.println("Set SubNumberI to "+SubNumberI);
+            SubNameI = "";
+            tempNL = "";
+            if ((inFile.hasNext())&& (!inFile.hasNextInt()) && (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                //System.out.println("Read word from file of "+tempNL+" with length "+tempNL.length());
+                digiCount = tempNL.length() - 1;
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount)); 
+                //System.out.println("digicount = "+digiCount+" and SubNumber is "+SubNumber);
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read I "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameI = SubName; // name
+            SubLetterI = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+
+            /*  Title J */
+            SubNumberJ = SubNumber;
+            SubNameJ = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                //System.out.println("Read tempNL at J *"+tempNL+"*");
+                digiCount = tempNL.length() - 1;
+                //System.out.println("digiCount at J is "+digiCount);
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));                
+            }
+
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read J "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameJ = SubName; // name
+            SubLetterJ = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+
+            /*  Title K */
+            SubNumberK = SubNumber;
+            SubNameK = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                //System.out.println("Read tempNL at K *"+tempNL+"*");
+                digiCount = tempNL.length() - 1;
+                //System.out.println("digiCount at K is "+digiCount);
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+            
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    SubLetter = tempNL.charAt(digiCount);
+                    validSubLevel = true;
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameK = SubName; // name
+            SubLetterK = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+
+            /*  Title L */
+            SubNumberL = SubNumber;
+            SubNameL = "";
+            tempNL = "";
+            if ((inFile.hasNext()) && (!inFile.hasNextInt())&& (digiCount > 0))
+            {
+                tempNL = inFile.next();
+                //System.out.println("Read tempNL at L *"+tempNL+"*");
+                digiCount = tempNL.length() - 1;
+                //System.out.println("digiCount at L is "+digiCount);
+                if (digiCount > 0)
+                    SubNumber = Integer.parseInt(tempNL.substring(0,digiCount));  
+            }
+
+            if (tempNL.length() >= 2)
+            while (!validSubLevel && inFile.hasNext())
+            {
+                try
+                {   inFile.useDelimiter(" : ");  // name ends with :
+                    SubName = inFile.next();  // name
+                    validSubLevel = true;
+                    SubLetter = tempNL.charAt(digiCount);
+                    inFile.reset();  
+                    inFile.nextLine();
+                    charCount++;
+                    //System.out.println("Read "+SubLetter+" and "+SubName+" and "+SubNumber);                
+                }
+                catch  (InputMismatchException ime)
+                {   // Skip this line
+                    validSubLevel = false;
+                    tempLine = inFile.nextLine();
+                    //System.out.println("Skipped this line"+tempLine);                
+                }
+            }
+            validSubLevel = false;
+            SubNameL = SubName; // name
+            SubLetterL = SubLetter;
+            //SubNumber = 0;
+            SubName = "";  
+            SubLetter = ' ';
+        
+        
+            // Print top-level data from file in table for use selection 
+        //System.out.println("\nPlease make your favorite selection from the table:" );
+            System.out.println("\nSubchoices for #"+TopNumber+" : "+TopName);
+        System.out.printf("%8s%30s\n","Letter","Title");
+        //System.out.println("_______________________________________");
+        System.out.println("=======================================");
+        System.out.printf("%5s%33s\n",SubLetterA,SubNameA);
+        System.out.printf("%5s%33s\n",SubLetterB,SubNameB);    
+        if((SubLetterC == 'C')||(SubLetterC == 'c'))
+                System.out.printf("%5s%33s\n",SubLetterC,SubNameC); 
+        if((SubLetterD == 'D')||(SubLetterD == 'd')) 
+            System.out.printf("%5s%33s\n",SubLetterD,SubNameD);        
+        if((SubLetterE == 'E')||(SubLetterE == 'e')) 
+            System.out.printf("%5s%33s\n",SubLetterE,SubNameE);        
+        if((SubLetterF == 'F')||(SubLetterF == 'f')) 
+            System.out.printf("%5s%33s\n",SubLetterF,SubNameF);        
+        if((SubLetterG == 'G')||(SubLetterG == 'g')) 
+            System.out.printf("%5s%33s\n",SubLetterG,SubNameG);        
+        if((SubLetterH == 'H')||(SubLetterH == 'h')) 
+            System.out.printf("%5s%33s\n",SubLetterH,SubNameH); 
+        if((SubLetterI == 'I')||(SubLetterI == 'i')) 
+            System.out.printf("%5s%33s\n",SubLetterI,SubNameI);        
+        if((SubLetterJ == 'J')||(SubLetterJ == 'j')) 
+            System.out.printf("%5s%33s\n",SubLetterJ,SubNameJ);
+        if((SubLetterK == 'K')||(SubLetterK == 'k')) 
+            System.out.printf("%5s%33s\n",SubLetterK,SubNameK);
+        if((SubLetterL == 'L')||(SubLetterL == 'l')) 
+            System.out.printf("%5s%33s\n",SubLetterL,SubNameL); 
+        
+        System.out.print("\nPlease select your favorite from the list above: ");
+        
+        char userLetter = ' ';
+        userInValid = false;
+        moveForward = false;
+        do
+        {   try
+            {   userLetter = (kybd.next()).charAt(0);
+                userInValid = true; 
+                //System.out.println("Read "+userLetter);
+            }
+            catch  (InputMismatchException ime)
+            {   
+                userInValid = false;
+                userLetter = ' ';
+
+            }
+        
+            int userLet = 'A'+ charCount - 1;
+            char usLetCap = (char)userLet;
+            userLetter = Character.toUpperCase(userLetter);
+            
+            moveForward = false;
+            if ((userLetter >= 'A') && (userLetter <= usLetCap))
+            {
+                moveForward = true;
+            }
+            else
+            {   System.out.println("The input was not recognized.");
+                System.out.print("Please enter a valid input between 'A' and '"+usLetCap+"' : ");
+            }
+        }
+        while (!moveForward);  // !moveForward is the same as moveForward == false       
+        
+        //System.out.println("Your subchoice input was "+userLetter);
+        
+        switch (userLetter)
+        {
+            case 'A': {
+                //SubNumber = SubNumberA;
+                SubLetter = SubLetterA;
+                SubName = SubNameA;
+                break;
+            }
+            case 'B': {
+                //SubNumber = SubNumberB;
+                SubLetter = SubLetterB;
+                SubName = SubNameB;
+                break;
+            }  
+            case 'C': {
+                //SubNumber = SubNumberC;
+                SubLetter = SubLetterC;
+                SubName = SubNameC;
+                break;
+            } 
+            case 'D': {
+                //SubNumber = SubNumberD;
+                SubLetter = SubLetterD;
+                SubName = SubNameD;
+                break;
+            }   
+            case 'E': {
+                //SubNumber = SubNumberE;
+                SubLetter = SubLetterE;
+                SubName = SubNameE;
+                break;
+            } 
+            case 'F': {
+                //SubNumber = SubNumberF;
+                SubLetter = SubLetterF;
+                SubName = SubNameF;
+                break;
+            } 
+            case 'G': {
+                //SubNumber = SubNumberG;
+                SubLetter = SubLetterG;
+                SubName = SubNameG;
+                break;
+            } 
+            case 'H': {
+                SubNumber = SubNumberH;
+                SubLetter = SubLetterH;
+                SubName = SubNameH;
+                break;
+            } 
+            case 'I': {
+                //SubNumber = SubNumberI;
+                SubLetter = SubLetterI;
+                SubName = SubNameI;
+                break;
+            } 
+            case 'J': {
+                //SubNumber = SubNumberJ;
+                SubLetter = SubLetterJ;
+                SubName = SubNameJ;
+                break;
+            }  
+            case 'K': {
+                //SubNumber = SubNumberK;
+                SubLetter = SubLetterK;
+                SubName = SubNameK;
+                break;
+            } 
+            case 'L': {
+                //SubNumber = SubNumberL;
+                SubLetter = SubLetterL;
+                SubName = SubNameL;
+                break;
+            }             
+        }
+
+        //System.out.println("The number is "+SubNumber+" and name is "+SubName);
+        
+        // ** Need to close file and reopen so can read from the top again ** //
+        
+        SFfile = new File("SciFiFantasyYear.txt");
+
+        try
+        {
+            inFile = new Scanner(SFfile);
+            //System.out.println("File available.");
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            inFile = new Scanner(System.in);
+            //System.out.println("\nFile not found - please correct file input ; "+fnfe);
+            fileFound = false;
+        }        
+    
+        // Section to read the items in subchoice after the colon 
+        /*
+        Genre = ' ';
+        BookYear = 0;
+        MovieYear = 0;
+        TVYear = 0;      
+        
+        int lineCount = 0;
+        String skip = "";
+        */
+        
+        String skipNumLet = "";
+        SubBookYear = 0;
+        SubMovieYear = 0;
+        SubTVYear = 0;       
+        String SubNumLet = ""+SubNumber+SubLetter;
+        tempLine = "";
+        
+        //System.out.println("SubNumLet is "+SubNumLet+" skipNumLet is "+skipNumLet);
+        // ** Need to get to correct line **
+        while ((! SubNumLet.equals(skipNumLet)) && (inFile.hasNext()))
+        {   
+            skipNumLet = inFile.next();
+            //validTopLevel = true;
+            inFile.useDelimiter(" : ");  // name ends with :
+            SubName = inFile.next();  // name
+            inFile.reset();  
+            //lineCount++;
+            //System.out.println("Read "+skipNumLet+" and "+SubName);                
+            tempLine = inFile.nextLine();
+            //System.out.println("Skipped this line"+tempLine);   
+        }
+        
+        inFile = new Scanner(tempLine);
+        //TopNumber = skipNumber;
+        //System.out.println("Read "+skipNumber+" and "+TopName);
+        // Read the end of the line and save
+        // Then do subchoice reading
+        skip = inFile.next(); 
+        //Genre = (inFile.next()).charAt(0);  // S, F, or E
+        //System.out.println("Genre "+Genre);
+        temp = inFile.next();   // first input of media info
+        //System.out.println("1st temp "+temp);
+        tempYear = inFile.nextInt();
+        //System.out.println("1st SubTempYear "+tempYear);
+        if (temp.equalsIgnoreCase("Book"))
+        {
+            SubBookYear = tempYear;
+        }
+        else if (temp.equalsIgnoreCase("Movie"))
+        {
+            SubMovieYear = tempYear;
+        }
+        else if (temp.equalsIgnoreCase("TV"))
+        {
+            SubTVYear = tempYear;
+        }
+        
+        temp = "";
+        tempYear = 0;
+        tempStr = "";
+        tempChar = ' ';        
+        
+        if (inFile.hasNext())
+        {
+            temp = inFile.next();  // read next word
+            tempChar = temp.charAt(0);  // get first char
+            tempStr = tempStr.concat(tempStr+tempChar);  // turn into one char string
+            numCheck = 0;
+            newBMT = false;            
+            
+        }
+        //System.out.println("2nd temp "+temp);
+        // This word might be Movie, TV, #, or #X
+        // Check to see if the first letter is a digit
+
+
+
+        // if it's a number then it's a new line of data
+        try
+        {   numCheck = Integer.parseInt(tempStr);  // new line with # or #X
+            //System.out.println("At 2nd New line of data numCheck is "+numCheck);
+            newBMT = true;
+        }
+        catch (NumberFormatException nfe)
+        {   // another media format
+            if (!tempStr.equals(""))
+            {
+                tempYear = inFile.nextInt();
+                //System.out.println("Additional media");
+                if (temp.equalsIgnoreCase("Movie"))
+                {
+                    SubMovieYear = tempYear;
+                }
+                else if (temp.equalsIgnoreCase("TV"))
+                {
+                    SubTVYear = tempYear;
+                }
+            }
+        }
+
+        //System.out.println("newBMT is "+newBMT);
+        
+        if (!newBMT)
+        {
+            temp = "";
+            tempYear = 0;
+            tempStr = "";
+            tempChar = ' ';
+
+            if (inFile.hasNext())
+            {
+                temp = inFile.next();  // read next word
+                //System.out.println("3rd temp "+temp);
+                // This word might be Movie, TV, #, or #X
+                // Check to see if the first letter is a digit
+                tempChar = temp.charAt(0);  // get first char
+                tempStr = tempStr.concat(tempStr+tempChar);  // turn into one char string
+                //System.out.println("tempStr is *"+tempStr+"*");
+                numCheck = 0;
+                newBMT = false;
+
+                // if it's a number then it's a new line of data
+                try
+                {   numCheck = Integer.parseInt(tempStr);  // new line with # or #X
+                    //System.out.println("numCheck "+numCheck);
+                    //System.out.println("At 3rd New line of data numCheck is "+numCheck);
+                    newBMT = true;
+                }
+                catch (NumberFormatException nfe)
+                {   // another media format
+                    tempYear = inFile.nextInt();
+                    //System.out.println("TV media");
+                    SubTVYear = tempYear;
+                }
+            }
+        }
+        //System.out.println("SubBookYear "+SubBookYear+" SubMovieYear "+
+        //        SubMovieYear+" SubTVYear "+SubTVYear);
+        
+        } // if (temp.length() == 2)
+
+        
+     // * Print user genre preference, choice and subchoice in table 
+        /*
+        System.out.println("\nYour preference is "+bookMovieTV+
+                (subChoice.equals("")? "" : ": "+subChoice )+
+                " in the genre of "+genre);
+     
+        System.out.println("BookYear "+BookYear+" MovieYear "+MovieYear+" TVYear "+TVYear);        
+        System.out.println("SubBookYear "+SubBookYear+" SubMovieYear "+
+                SubMovieYear+" SubTVYear "+SubTVYear);
+             
+        */
+        
+        System.out.println("\n");
+        System.out.printf("%63s\n","^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");        
+        System.out.printf("%-40s%5s%6s%6s%6s\n",("Your genre is "+GenreWords),"","Book","Movie","TV");         
+        System.out.printf("%10s%35s%6s%6s%6s\n","","Title","Year","Year","Year");  
+        System.out.printf("%63s\n","----------------------------------------------------------------"); 
+        //System.out.printf("%15s%30s\n","Genre",genre);
+        System.out.printf("%10s%35s%6s%6s%6s\n","Choice",TopName,
+                (BookYear==0?"":BookYear),
+                (MovieYear==0?"":MovieYear),
+                (TVYear==0?"":TVYear));
+        System.out.printf("%10s%35s%6s%6s%6s\n",
+                (SubName.equals("")?"":"Subchoice"),
+                (SubName.equals("")?"":SubName),
+                ((SubName.equals("")||SubBookYear==0)?"":SubBookYear),
+                ((SubName.equals("")||SubMovieYear==0)?"":SubMovieYear),
+                ((SubName.equals("")||SubTVYear==0)?"":SubTVYear)
+        );
+        System.out.println("");
+        
+
+
+    }
+    
+    public static String makeGenre(char Genre)  
+    {
+        char gen = Character.toUpperCase(Genre);
+        String temp = "Science Fiction or Fantasy";
+        switch (gen)
+        {
+            case 'F': temp = "Fantasy"; break;
+            case 'S': temp = "Science Fiction"; break;
+        }
+        return temp;
+    }
+
+}
