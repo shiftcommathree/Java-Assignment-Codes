@@ -1,0 +1,234 @@
+package code8mar16delim;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
+/**
+ *
+ * @author bunny
+ */
+public class Code8Mar16Delim 
+{
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) 
+    {
+        // methods
+        // try-catch exception handling
+        // control statements
+        // file input
+        
+        //File pref = new File("src/code6mar18/mediapref.txt");
+        File pref = new File("mediaprefdelim.txt");
+        //Scanner input = new Scanner(System.in);
+        Scanner input;
+        Scanner inputLine;
+        Logger.getGlobal().setLevel(Level.OFF);// Use Level.OFF to turn off ; .INFO to turn on       
+        int choice;
+        String mobOrStat;
+        boolean moveForward = false;
+        char iOrO = ' ';
+        String reason;
+        String tempLine;
+        String finalMedia;
+        boolean fileFound = true;
+        try
+        {
+            input = new Scanner(pref);
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            input = new Scanner(System.in);
+            System.out.println("File not found - please correct file input");
+            fileFound = false;
+        }
+        
+        System.out.println("Hi!  What kind of entertainment media do you prefer? ");
+        if (fileFound)
+            System.out.println("We'll read the file and find out.");
+        
+        while (fileFound && input.hasNext())
+        {
+            
+        do
+        {
+            System.out.println("\n\nSelecting mobile or stationary based on the file input.");
+            //System.out.println("M - mobile or S - stationary ");
+            mobOrStat = input.next();   // reads a "word"
+            //input.nextLine();           // reads end of line marker out of input buffer
+            Logger.getGlobal().info("File value *"+mobOrStat+"*");
+            // Validate the user's input to insure that only one of the 
+            // following values are entered:
+            // M, m, mobile or
+            // S, s, stationary
+            
+            if (mobOrStat.equalsIgnoreCase("m") || 
+                mobOrStat.equalsIgnoreCase("mobile") ||
+                mobOrStat.equalsIgnoreCase("s") || 
+                mobOrStat.equalsIgnoreCase("stationary") )
+            {
+                moveForward = true;
+            }
+            else
+            {
+                System.out.println("THe file input was not recognized.");
+                System.out.println("Please enter a valid input.");
+            }
+        }
+        while (!moveForward);  // !moveForward is the same as moveForward == false
+                // alternate selection
+        mobOrStat = mobOrStat.toUpperCase();
+        switch (mobOrStat)        
+        {
+            case "S":
+            case "STATIONARY": mobOrStat = "STATIONARY"; break;
+            case "M":
+            case "MOBILE": mobOrStat = "MOBILE"; break;
+            
+        }
+        System.out.println("The file contained "+mobOrStat+" as your first entertainment preference\n");
+        
+        String inOrOut = "";
+        if (mobOrStat.equalsIgnoreCase("STATIONARY"))
+        {   // query user for home (TV, desktop computer) or not (movie theater, live theatre, RPG)
+            System.out.println("Checking to see if the entertainment media is in your home or outside your home.");
+            //System.out.println("Respond with I (inside) or O (outside): ");
+            inOrOut = input.next();
+            Logger.getGlobal().info("User entered *"+inOrOut+"*");
+            iOrO = inOrOut.charAt(0);
+            Logger.getGlobal().info("First letter of user input is *"+iOrO+"*");
+            if ((iOrO == 'I') || (iOrO == 'i'))
+            {
+                inOrOut = "INSIDE";
+            }
+            else if ((iOrO == 'O') || (iOrO == 'o'))
+            {
+                inOrOut = "OUTSIDE";
+            }
+            else // user entered invalid input
+            {  // could have set up a do-while loop like above but didn't
+                System.out.println("The file contained an invalid input.");
+                System.out.println("The system assumes you are a mushroom and your media in INSIDE.");
+                inOrOut = "INSIDE";
+            }
+            System.out.println("The file indicated "+inOrOut+" as your next entertainment preference\n");
+            // Read reason for preference.
+            // Reason is delimited by a bang
+            tempLine = input.nextLine();
+            inputLine = new Scanner(tempLine);
+            //System.out.println("DEBUG: tempLine is *"+tempLine+"*");
+            inputLine.useDelimiter(Pattern.compile("!"));
+            //System.out.println("DEBUG: The delimiter used is "+inputLine.delimiter());
+            reason = inputLine.next();
+            System.out.println("The file lists your reason as \""+reason+"!\"");
+            inputLine.reset();
+            String period = inputLine.next();
+
+            
+            
+            // Given INSIDE or OUTSIDE
+            // find user's preferred type of media
+            // INSIDE choices are: Desktop computer, TV, Gaming system, VR
+            // OUTSIDE choices are: Movie theater, Theatre, RPG, ComicCon
+            // Making a method to 
+            // show choices
+            if (inOrOut.equals("INSIDE"))
+            {
+                finalMedia = chooseMedia("Desktop computer", "TV",
+                "Gaming system", "VR", inputLine);
+            }
+            else
+             {
+                finalMedia = chooseMedia("Movie theater", "Theatre",
+            "ComicCon", "RPG", inputLine);
+            }               
+                                   
+        }
+        else // must be MOBILE
+        {   
+            // Read reason for preference.
+            // Reason is delimited by a bang
+            tempLine = input.nextLine();
+            inputLine = new Scanner(tempLine);
+            //System.out.println("DEBUG: tempLine is *"+tempLine+"*");
+            inputLine.useDelimiter(Pattern.compile("!"));
+            //System.out.println("DEBUG: The delimiter used is "+inputLine.delimiter());
+            reason = inputLine.next();
+            System.out.println("The file lists your reason as \""+reason+"!\"");
+            inputLine.reset();
+            String period = inputLine.next();
+                      
+            
+           // query user for phone, laptop, VR system, ...)
+            finalMedia = chooseMedia("Laptop computer", "Tablet/iPad",
+                "Phone", "Walkman", inputLine);            
+        }
+        //System.out.println("Final choice is "+finalMedia);
+        System.out.println("The file indicated "+finalMedia+" as your final entertainment preference\n");
+
+        System.out.println("\nYour media preference:");
+        System.out.printf("%15s%30s","Mobile?",mobOrStat);
+        if (!inOrOut.equals("")) System.out.println("");
+        System.out.printf("%15s%30s",
+                (inOrOut.equals("")?"":"Inside?"),
+                (inOrOut.equals("")?"":inOrOut)); 
+        System.out.printf("\n%15s%30s\n","Choice",finalMedia);
+        System.out.printf("%15s%30s\n","Reason?",reason);
+        
+        }  // end of while (moreInput)
+
+        
+    }
+    public static String chooseMedia(String firstChoice, String secondChoice,
+            String thirdChoice, String fourthChoice, Scanner input)
+    {
+        /*
+        System.out.println("Please select your favorite media from this list:");
+        System.out.println("1. "+firstChoice); // firstChoice is string
+        System.out.println("2. "+secondChoice);
+        System.out.println(   thirdChoice.equals("")?"":"3. "+thirdChoice    );
+        System.out.println(   fourthChoice.equals("")?"":"4. "+fourthChoice  );
+        //System.out.println();
+        System.out.println("Enter the number of your choice: ");
+        */
+        int intChoice;
+        try
+        {
+            intChoice = input.nextInt();
+        }
+        catch (InputMismatchException ime)
+        {
+            intChoice = 1;
+            if (input.hasNext())
+                input.nextLine();  // to clear out the bad data
+            System.out.println("Your file input was invalid.  Default 1 is chosen.");
+        }
+        catch (NoSuchElementException nse)
+        {
+            intChoice = 1;
+            if (input.hasNext())
+                input.nextLine();  // to clear out the bad data
+            System.out.println("Your file input was invalid.  Default 1 is chosen.");
+        }
+        
+        String finalChoice;
+        switch (intChoice)
+        {
+            case 1: finalChoice = firstChoice; break;
+            case 2: finalChoice = secondChoice; break;
+            case 3: finalChoice = thirdChoice; break;
+            case 4: finalChoice = fourthChoice; break;
+            default: finalChoice = "kazoo"; break;
+        }
+        return finalChoice;
+    }
+
+}
