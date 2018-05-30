@@ -1,0 +1,306 @@
+
+package code15feb16;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author bunny
+ */
+public class Code15Feb16
+{
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) 
+    {
+       // Calculating values of coinage
+        final int nickel = 5;
+        final int dime = 10;
+        final int penny = 1;
+        final int quarter = 25;
+        final int halfDollar = 50;
+        final int dollar = 100;
+        double couchMoney = 0.0;
+        Scanner input = new Scanner(System.in);  
+        Logger.getGlobal().setLevel(Level.OFF);// Use Level.OFF to turn off
+        int pennies = 0;                        // Use Level.INFO to see output
+        int nickels = 0;
+        int dimes = 0;
+        int quarters = 0;
+        int halfDollars = 0;
+        int dollars = 0;
+        String moreCoins = "";
+        double lunchCost = 0.0;
+        String runAgain = "N";
+        Logger.getGlobal().info("Example program with coins\n");
+        boolean moreRuns = true;
+        int coinAmount = 0;
+        File coins = new File("coins.txt");
+        Scanner inputFile;
+        boolean fileFound = true;
+        try
+        {
+            inputFile = new Scanner(coins);
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            inputFile = new Scanner(System.in);
+            fileFound = false;
+        }
+        
+        while (moreRuns)
+        {
+            moreRuns = false;
+            System.out.println("Let's find out how much money is inside the couch (or in your pocket, etc.)");
+            
+            if (!fileFound)
+            {
+                System.out.print("How many pennies do you have? ");
+            }
+            /*  moved this code to validateCoinAmount()
+            try
+            {
+                coinAmount = input.nextInt();
+            }
+            catch (InputMismatchException ime)
+            {
+                input.nextLine();
+                System.out.println("Your input was not valid.  "
+                        + "Please enter an integer number of coins (pennies): ");
+                coinAmount = input.nextInt();  // will crash if 2nd input is also bad
+            }
+            */
+            pennies = validateCoinAmount("pennies",fileFound, inputFile);
+            
+            Logger.getGlobal().info("The user entered "+pennies+" pennies.\n");
+
+            if (!fileFound)
+                System.out.print("\nHow many nickels do you have? ");
+            
+            nickels = validateCoinAmount("nickels",fileFound, inputFile);
+            
+            Logger.getGlobal().info("The user entered "+nickels+" nickels.\n");
+
+            if (!fileFound)
+            {
+                System.out.print("\nHow many dimes do you have? ");
+                System.out.println("You did not have an input file.");
+            }
+            dimes  = validateCoinAmount("dimes",fileFound, inputFile);
+            Logger.getGlobal().info("The user entered "+dimes+" dimes.\n");
+
+            if (!fileFound)
+                System.out.print("\nHow many quarters do you have? ");
+            quarters  = validateCoinAmount("quarters",fileFound, inputFile);
+            Logger.getGlobal().info("The user entered "+quarters+" quarters.\n");        
+
+            System.out.print("\nDo you have any other coins? Enter Y or N ");
+            moreCoins = input.next();
+            if (moreCoins.equalsIgnoreCase("Y") )
+            {
+                // check on halfdollars and dollar coins
+                if (!fileFound)
+                    System.out.print("\nHow many halfDollars do you have? ");
+                halfDollars  = validateCoinAmount("halfDollars",fileFound, inputFile);
+                if (!fileFound)
+                    System.out.print("\nHow many dollars do you have? ");
+                dollars  = validateCoinAmount("dollars",fileFound, inputFile);    
+            }
+            // How do we calculate the amount of money in dollars?
+            couchMoney = (nickel * nickels + penny * pennies + dime * dimes +
+                    quarter * quarters + halfDollar * halfDollars +
+                    dollar * dollars) / 100.0 ;
+            //couchMoney = couchMoney/100;
+            System.out.printf("\nYour total couch money is $%.2f.  TA DA!\n\n",couchMoney);
+            //System.out.println("Your total couch money is "+couchMoney+".  TA DA!");
+
+            System.out.println("Is this enough money to buy lunch? Y / N  ");
+            String lunchMoney = input.next();
+            // If user says yes, then print "Yay! Let's go eat!"
+            if (lunchMoney.equalsIgnoreCase("Y"))
+            {
+                System.out.println("Yay! Let's go eat!");
+            }
+            else 
+            // If the user says no, then ask the user if they have food at home for lunch.
+            {
+                System.out.println("Do you have food at home for lunch?  Y / N ");
+                String homeFood = input.next();
+
+            //     If user says yes, then print "OK, let's make lunch!"
+                if (homeFood.equalsIgnoreCase("Y") || homeFood.equalsIgnoreCase("Yes"))
+                {
+                    System.out.println("OK, let's make lunch!");
+                    //      let the user choose from a variety of lunch choices 
+                    //      Version A: number the choices
+                    //      Version B: name the choices
+                    // [This section will use a switch]  
+                    System.out.println("Here are the choices for lunch: "
+                            +"\nA. Mashed potatoes"
+                            +"\nB. Leftovers"
+                            +"\nC. Chicken"
+                            +"\nD. Hot dog"
+                            +"\nE. Sandwich"
+                            +"\nF. Pasta"
+                            +"\nG. Rice and beans"
+                            +"\nH. Spinach salad"
+                            +"\nPlease enter the letter of your choice: ");
+                    String choice = input.next();
+                    Logger.getGlobal().info("Choice is "+choice);
+                    //choice = choice.toUpperCase();
+                    Logger.getGlobal().info("Choice.toUpper is "+choice);
+                    String yourLunch = "fasting";
+                    switch (choice)
+                    {
+
+                        case "a":
+                        case "A": yourLunch = "Mashed potatoes"; break;
+                        case "b":
+                        case "B": yourLunch = "Leftovers"; break;
+                        case "c":
+                        case "C": yourLunch = "Chicken"; break;
+                        case "d":
+                        case "D": yourLunch = "Hot dog"; break;
+                        case "e":
+                        case "E": yourLunch = "Sandwich"; break;
+                        case "f":
+                        case "F": yourLunch = "Pasta"; break;
+                        case "g":
+                        case "G": yourLunch = "Rice and beans"; break;
+                        case "h":
+                        case "H": yourLunch = "Spinach salad"; break;
+                        /*
+                        case "Jan":
+                        case "jan":
+                        case "Jan.":
+                        case "jan.":
+                        case "january":
+                        case "1":
+                        case "January": System.out.println("January");
+                        */
+                       // default: yourLunch = "dust bunnies"; break;                        
+                    }
+                    System.out.println("Your lunch at home will be "+yourLunch);
+                }
+                else 
+                {
+            //     else, ask the user how much lunch will cost and  [ask lunch cost]
+                    System.out.println("How much will lunch cost? ");
+                    lunchCost = input.nextDouble();
+            //           then calculate how much more money they need to find in 
+            //           the chair cushions
+                    lunchCost = lunchCost - couchMoney;
+                    System.out.println("You need an additional $"+lunchCost+" for lunch.");
+                    System.out.printf("Go find $%.2f in another piece of furniture\n",lunchCost);
+
+            // [This section will show nested if-else examples]
+                }
+            }
+
+
+            // Now we want to ask the user if they want run the whole program again
+            // Set up control to allow program to run more than once.
+            // [This will have us go back and put in a loop structure]
+            boolean runMore; // = false;
+            // while (runMore)
+            do
+            {
+                runMore = false;    // needed for while loop and do-while loop
+
+                System.out.println("\nWould you like to run the program again? Y / N");
+                runAgain = input.next();
+                if (runAgain.equalsIgnoreCase("Y") || runAgain.equalsIgnoreCase("Yes"))
+                {
+                    // handle while loop control
+                    moreRuns = true;
+                }
+                else if (runAgain.equalsIgnoreCase("N") || runAgain.equalsIgnoreCase("No"))
+                {
+                    // do actions for this choice
+                    moreRuns = false; 
+                }
+                else  // user did not enter requested values of input
+                {
+                    //System.out.println("Your input was not valid.  \"Science fiction\" is selected");
+                    /** default choice if input not valid
+                    System.out.println("Your input was not valid. \"No\" is selected");
+                    moreRuns = false;
+                    * */
+                    System.out.println("Your input was not valid.");
+                    runMore = true;
+                }
+            }
+           while (runMore);
+         // After this, check out Example1Feb18WhatCoins.java6
+        }
+        System.out.println("Thank you for running the CouchMoney program");        
+    }
+/*    
+    public static int validateCoinAmount()
+    {
+        int coinAmount = 0;
+        Scanner input = new Scanner(System.in);
+        Logger.getGlobal().setLevel(Level.OFF);
+        try
+        {
+            coinAmount = input.nextInt();
+            Logger.getGlobal().info("In validateCoinAmount()");
+        }
+        catch (InputMismatchException ime)
+        {
+            input.nextLine();
+            System.out.println("Your input produced : "+ime);
+            System.out.println("Your input was not valid.  "
+                    + "Please enter an integer number of coins: ");
+            coinAmount = input.nextInt();  // will crash if 2nd input is also bad
+        } 
+        catch (Exception e)
+        {
+            System.out.println("You screwed up somehow : "+e);
+            coinAmount = -1;
+        }
+        return coinAmount;
+    }
+*/  
+    public static int validateCoinAmount(String whichCoin, 
+            boolean fileFound, Scanner inputFile)
+    {
+        int coinAmount = 0;
+        Scanner input = new Scanner(System.in);
+        Logger.getGlobal().setLevel(Level.OFF);
+        try
+        {
+            if (fileFound)
+            {
+                coinAmount = inputFile.nextInt();
+            }
+            else
+            {
+                coinAmount = input.nextInt();
+            }
+            Logger.getGlobal().info("In validateCoinAmount(String whichCoin)");
+        }
+        catch (InputMismatchException ime)
+        {
+            input.nextLine();
+            //System.out.println("Your input produced : "+ime);
+            System.out.println("Your input was not valid.  "
+                    + "Please enter an integer number of "+whichCoin+": ");
+            coinAmount = input.nextInt();  // will crash if 2nd input is also bad
+        } 
+        catch (Exception e)
+        {
+            System.out.println("You screwed up somehow : "+e);
+            coinAmount = -1;
+        }
+        return coinAmount;
+    }
+
+}
